@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="join">
+	<insert id="insertjoin" parameterType="hashmap" >
+		insert into joinm
+		(
+			projectNo,
+			userId,
+			leaderYn,
+			createDate,
+			updateDate,
+			createUserId,
+			updateUserId
+		)values
+		(
+			#{projectNo},
+			#{joinId},
+			"N",
+			now(),
+			now(),
+			#{userId},
+			#{userId}
+		)
+	</insert>
+	<select id="selectJoinId" parameterType="hashmap" resultType="hashmap">
+		select j.userId as joinUserId,
+			   j.projectNo as joinProjectNo,
+			   j.leaderYn as leaderYn,
+			   m.userName as userName
+		  from joinm j
+          left outer join member m
+          	on j.userId=m.userId
+          	where userDeleteYn="N"
+	</select>
+	<delete id ="deleteJoin" parameterType="hashmap" >
+		delete 
+		  from joinm
+		 where userId=#{joinId}
+		   and projectNo=#{projectNo}
+	</delete>
+	
+	<select id="selectJoinIdMap" parameterType="hashmap" resultType="hashmap">
+	select j.userId as joinUserId,
+			   j.projectNo as joinProjectNo
+		  from joinm j
+          left outer join member m
+          	on j.userId=m.userId
+		 where j.projectNo=#{projectNo}
+	</select>
+	<select id="chooseReader" parameterType="hashmap" resultType="hashmap">
+		select j.userId as userId,
+			   j.projectNo as projectNo,
+			   j.leaderYn as leaderYn,
+			   m.userName as userName
+		  from joinm j
+		  left outer join member m
+            on j.userId=m.userId 
+		 where j.projectNo=#{projectNo}
+		 <if test="searchkeyword1 != null"> 
+		   and (m.userName like concat('%',#{searchkeyword1},'%') or m.userId like concat('%',#{searchkeyword1},'%'))
+		</if>
+		 limit #{currentpageDB},#{paging}
+	</select>
+	
+	<select id="joincnt" parameterType="hashmap" resultType="int">
+		   SELECT count(*)
+			 FROM joinm j
+		 	left outer join member m
+            on j.userId=m.userId 
+		 where j.projectNo=#{projectNo}
+		 <if test="searchkeyword1 != null"> 
+			  and (m.userName like concat('%',#{searchkeyword1},'%') or m.userId like concat('%',#{searchkeyword1},'%'))
+		</if>
+	</select>
+	
+	<select id="joinMember" parameterType="hashmap" resultType="hashmap">
+		   SELECT j.userId as userId,
+		   		  j.projectNo as projectNo,
+		   		  j.leaderYn as leaderYn,
+		   		  m.userName as userName
+			 FROM joinm j
+             left outer join member m
+             on j.userId=m.userId 
+		 	where projectNo=#{projectNo}
+		 	  and userDeleteYn="N"
+	</select>
+	
+	<select id="joinMemberCheck" parameterType="hashmap" resultType="hashmap">
+		   SELECT j.userId as userId,
+		   		  j.projectNo as projectNo,
+		   		  j.leaderYn as leaderYn,
+		   		  m.userName as userName
+			 FROM joinm j
+             left outer join member m
+             on j.userId=m.userId 
+		 	where projectNo=#{projectNo}
+		 	  and j.userId=#{userId}
+		 	  and userDeleteYn="N"
+	</select>
+	
+	<update id="updateYleader" parameterType="hashmap">
+<!-- 		update joinm
+		   set leaderYn=
+		  case when leaderYn="Y"
+		  	   then "N"
+		  	   when leaderYn="N"
+		  	   then "Y"
+		   end 
+		   where userId=#{userId}
+		   	 and projectNo=#{projectNo} -->
+		update joinm
+		   set leaderYn="Y"
+		 where userId=#{joinId}
+		   and projectNo=#{projectNo}
+	</update>
+	<update id="updateNleader" parameterType="hashmap">
+<!-- 		update joinm
+		   set leaderYn=
+		  case when leaderYn="Y"
+		  	   then "N"
+		  	   when leaderYn="N"
+		  	   then "Y"
+		   end 
+		   where userId=#{userId}
+		   	 and projectNo=#{projectNo} -->
+		update joinm
+		   set leaderYn="N"
+		 where userId=#{joinId}
+		   and projectNo=#{projectNo}
+	</update>
+ 	<select id="projectLeader" parameterType="hashmap" resultType="hashmap">
+		   SELECT j.userId as userId,
+		   		  j.projectNo as projectNo,
+		   		  j.leaderYn as leaderYn,
+		   		  m.userName as userName
+			 FROM joinm j
+             left outer join member m
+             on j.userId=m.userId 
+		 	where projectNo=#{projectNo}
+		 	  and leaderYn="Y"
+		 	  and userDeleteYn="N"
+	</select> 
+	<select id="leaderNum" parameterType="hashmap" resultType="int">
+	       select count(*)
+	         from joinm j
+	         left outer join member m
+	           on j.userId=m.userId
+	        where projectNo=#{projectNo}
+			  and userDeleteYn="N"
+	          and leaderYn="Y"
+	</select>
+	<select id="joinNum" parameterType="hashmap" resultType="int">
+	       select count(*)
+	         from joinm j
+	         left outer join member m
+	           on j.userId=m.userId
+	        where projectNo=#{projectNo}
+			  and userDeleteYn="N"
+	</select>
+	
+</mapper>

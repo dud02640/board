@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- / WEB-INF / views 디렉토리의 @Controllers에서 .jsp 리소스로 렌더링하기 위해 선택한View를 해결합니다. -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<!-- 파일업로드에 필요한 bean -->
+	<beans:bean id="mulitpartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<!-- 파일업로드 용량 -->
+		<beans:property name="maxUploadSize" value="10485760"/>
+	</beans:bean>
+	<!-- 파일업로드를 위한 디렉토리 설정 -->
+	<!-- String uploadPath = new String("업로드 경로") -->
+	<beans:bean id="uploadPath" class="java.lang.String">
+	    <!-- 파일업로드 디렉토리-->
+	    <beans:constructor-arg value="C:\\data"/>
+	</beans:bean>
+	
+	<context:component-scan base-package="com.young" />
+	
+<!-- 	<beans:bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<beans:property name="exceptionMappings">
+		<beans:props>
+			<beans:prop key="org.springframework.dao.DuplicateKeyException">/login/login</beans:prop>
+		</beans:props>
+		</beans:property>
+	</beans:bean> -->
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/**" />
+			<exclude-mapping path="/login/login.do"/>						<!-- 무한 리다이렉션을 막기위해 로그인 페이지는 인터셉터 안함 -->
+			<exclude-mapping path="/login/logincheck.do"/>					<!-- 로그인 세션 저장을 위한 do -->
+			<beans:bean class="com.young.interceptor.LoginInterceptor"/>
+		</interceptor>
+	</interceptors> 
+	
+</beans:beans>

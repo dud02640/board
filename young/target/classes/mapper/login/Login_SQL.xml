@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+	<insert id="insertMember" parameterType="hashmap" >
+		insert into member
+		(
+			userId,
+			userPw,
+			userName,
+			userRank,
+			userPosition,
+			userEmail,
+			adminYn,
+			userImage,
+			userPhoneNumber,
+			createDate,
+			updateDate,
+			createUserId,
+			updateUserId,
+			userDeleteYn
+		)values
+		(
+			#{userId},
+			#{userPw},
+			#{userName},
+			#{userRank},
+			#{userPosition},
+			#{userEmail},
+			"N",
+			(case 
+			 when #{userImage}="/data/" then "/data/noimg.PNG"
+			 else #{userImage}
+			 end),
+			#{userPhoneNumber},
+			now(),
+			now(),
+			#{userId},
+			#{userId},
+			"N"
+		)
+	</insert>
+	<select id="checkId" parameterType="hashmap" resultType="int">
+		select ifnull(count(*),0)
+		  from member
+		 where userId = #{userId}
+	</select>
+	<select id ="selectCheckMember" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		  FROM MEMBER
+		 WHERE userId=#{userId}
+		   AND userPw=#{userPw}
+		   AND userDeleteYn="N"
+	</select>
+	<select id ="selectMemberList" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		  FROM MEMBER 
+		 <if test="searchkeyword != null || searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">where userName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">where userId like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">where userPosition like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==4">where userRank like concat('%',#{searchkeyword},'%')</when>
+			 </choose> 
+		 </if>
+		 order by (case userDeleteYn
+		 		   when "N" then 1
+		 		   else 2
+		 		   end)
+		 limit #{currentpageDB},#{paging};
+	</select>
+	
+	<!-- join페이징 -->
+	<select id ="selectJoinList" parameterType="hashmap" resultType="hashmap">
+		 SELECT m.userId as loginUserId,
+				m.userName as loginUserName,
+				j.userId as joinUserId,
+				j.projectNo as joinProjectNo,
+				j.leaderYn as leaderYn
+		   FROM MEMBER m
+		   left outer join joinm j
+           on (m.userId = j.userId and j.projectNo=#{projectNo})
+		  where m.userDeleteYn="N"
+		    and m.adminYn ="N"
+		  <if test="searchkeyword != null"> <!-- 우선 or 로 빈칸체크 안됨 -->
+			and (m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
+		  </if>
+  		  order by (case leaderYn
+			  			when "Y" then 1
+	                    when "N" then 2
+	                    else 3
+                    end)
+		  limit #{currentpageDB},#{paging};
+	</select>
+	
+	<select id ="selectJoinCnt" parameterType="hashmap" resultType="int">
+	   SELECT count(*)
+		 FROM MEMBER 
+		 where userDeleteYn="N"
+		   and adminYn ="N"
+ 		<if test="searchkeyword != null"> 
+			and (userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+		</if>
+	</select>
+	<!-- join페이징 -->
+	
+	<select id ="selectWorkJoinList" parameterType="hashmap" resultType="hashmap">
+		 SELECT m.userId as loginUserId,
+				m.userName as loginUserName,
+				j.userId as joinUserId,
+				j.projectNo as joinProjectNo,
+				j.leaderYn as leaderYn
+		   FROM MEMBER m
+		   right outer join joinm j
+           on (m.userId = j.userId and j.projectNo=#{projectNo})
+		  where m.userDeleteYn="N"
+		    and m.adminYn ="N"
+		  <if test="searchkeyword != null"> <!-- 우선 or 로 빈칸체크 안됨 -->
+			and ((m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
+		  </if>
+  		  order by (case leaderYn
+			  			when "Y" then 1
+	                    when "N" then 2
+	                    else 3
+                    end)
+		  limit #{currentpageDB},#{paging};
+	</select>	
+	<select id ="selectWorkJoinListCnt" parameterType="hashmap" resultType="int">
+	     select count(*) 
+	       from joinm j
+	      right outer join member m
+	         on j.userId=m.userId
+		  where projectNo=#{projectNo}
+	        and userDeleteYn="N"
+	        and adminYn="N";
+ 		<if test="searchkeyword != null"> 
+			and ((userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+		</if>
+	</select>
+	
+	<select id ="selectMemberCnt" parameterType="hashmap" resultType="int">
+	   SELECT count(*)
+		 FROM MEMBER 
+		 <if test="searchkeyword != null || searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">where userName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">where userId like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">where userPosition like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==4">where userRank like concat('%',#{searchkeyword},'%')</when>
+			 </choose> 
+		 </if>
+	</select>
+	<select id ="selectMember" parameterType="hashmap" resultType="hashmap">
+	   SELECT *
+		 FROM MEMBER 
+		WHERE userId=#{userId}
+		  AND userPw=#{userPw}
+		  
+	</select>
+	<select id ="selectMemberinfo" parameterType="hashmap" resultType="hashmap">
+	   SELECT *
+		 FROM MEMBER 
+		WHERE userId=#{userId}
+	</select>
+	<update id ="updateMemberinfo" parameterType="hashmap" >
+	     update member
+			set	userId=#{gibonId},
+				userPw=#{userPw},
+				userName=#{userName},
+				userRank=#{userRank},
+				userPosition=#{userPosition},
+				userImage=(case 
+				when #{userImage}="/data/" then "/data/noimg.PNG"
+				else #{userImage}
+				end),
+				userEmail=#{userEmail},
+				userPhoneNumber=#{userPhoneNumber},
+				updateDate=now(),
+				updateUserId=#{gibonId}
+		  where userId=#{gibonId};
+	</update>
+	<update id="deleteMemberinfo" parameterType="hashmap">
+		 update member
+			set	userDeleteYn="Y"
+		  where userId=#{gibonId};
+	</update>
+	<update id="multiDelete" parameterType="hashmap">
+		 update member
+			set	userDeleteYn="Y"
+		  where userId=#{chk};
+	</update>
+	<select id="indivisualView" parameterType="hashmap" resultType="hashmap">
+ SELECT M.USERID AS userId,
+				   M.USERNAME AS userName,
+				   M.USERRANK AS userRank,
+			       M.USERPOSITION AS userPosition,
+			       group_concat(P.PROJECTNAME) AS projectName,
+			       (SELECT COUNT(*) FROM workchecklist W
+			       LEFT OUTER JOIN PROJECT P
+			       ON P.PROJECTNO=W.PROJECTNO
+			       WHERE M.USERID=W.USERID
+			         AND P.PROJECTDELETEYN="N"
+					 AND W.STATE="진행중"
+			        group by W.USERID) AS workCount
+			  FROM MEMBER M
+				   LEFT OUTER JOIN JOINM J
+				ON M.USERID=J.USERID
+				   LEFT OUTER JOIN PROJECT P
+				ON J.PROJECTNO=P.PROJECTNO 
+			   and P.PROJECTDELETEYN="N"
+			   and p.projectState!="bg-success"
+			 WHERE M.USERDELETEYN="N"
+			   AND M.ADMINYN="N"
+		<if test="searchkeyword != null || searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and userPosition like concat('%',#{searchkeyword},'%')</when>
+			 </choose> 
+		 </if>
+		 GROUP BY M.USERID
+		 limit #{currentpageDB},#{paging}
+	</select>
+	
+	<select id="indivisualViewCnt" parameterType="hashmap" resultType="int">
+  			SELECT count(*)
+			  FROM MEMBER M
+			 WHERE M.USERDELETEYN="N"
+			   AND M.ADMINYN="N"
+		<if test="searchkeyword != null || searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and userPosition like concat('%',#{searchkeyword},'%')</when>
+			 </choose> 
+		 </if>
+	</select>
+	<select id="memberListView" parameterType="hashmap" resultType="hashmap">
+		select *
+		  from member
+		 where userDeleteYn="N"
+		   and adminYn="N"
+	</select>
+	<select id="userInfo" parameterType="hashmap" resultType="hashmap">
+		select * from member
+		 where userId=#{gibonId}
+		   and userDeleteYn="N"
+	</select>
+	<select id="pwCheck" parameterType="hashmap" resultType="int">
+		select count(*) 
+		  from member
+		 where userId=#{gibonId}
+		   and userPw=#{userPw}
+	</select>
+	<select id="userHistory" parameterType="hashmap" resultType="hashmap">
+		select w.projectNo as projectNo,
+			   p.projectName as projectName,
+			   w.workNo as workNo,
+			   w.workNum as workNum,
+			   w.workSubject as workSubject,
+			   concat(substring(w.startDate,1,4),".",substring(w.startDate,5,2),".",substring(w.startDate,7,2)) as startDate,
+			   concat(substring(w.endDate,1,4),".",substring(w.endDate,5,2),".",substring(w.endDate,7,2)) as endDate,
+			   w.state as state,
+			   w.memo as memo,
+               m.userName as userName,
+               m.userId as userId,
+               w.updateDate as updateDate
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{gibonId}
+		   and w.state="진행완료"
+           and p.projectDeleteYn="N"
+         <if test="searchkeyword != null or searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and projectName like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+		 </if>
+		 limit #{currentpageDB},#{paging}
+	</select>
+	<select id="userHistoryCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{gibonId}
+		   and w.state="진행완료"
+           and p.projectDeleteYn="N"
+		  <if test="searchkeyword != null or searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+		 </if>
+	</select>
+	<insert id="insertSaveImg" parameterType="hashmap">
+		update member
+		   set userImage=#{userImage}
+		 where userId=#{gibonId}
+	</insert>
+
+</mapper>

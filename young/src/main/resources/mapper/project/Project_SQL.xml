@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="project">
+	
+	
+	<select id ="selectBoardList" parameterType="hashmap" resultType="hashmap">
+		select  p.projectNo as projectNo,
+				p.projectName as projectName,
+				p.institutionName as institutionName,
+				p.projectContent as projectContent,
+				p.projectImage as projectImage,
+				concat(substring(p.projectStartDate,1,4),".",substring(p.projectStartDate,5,2),".",substring(p.projectStartDate,7,2)) as projectStartDate,
+				concat(substring(p.projectEndDate,1,4),".",substring(p.projectEndDate,5,2),".",substring(p.projectEndDate,7,2)) as projectEndDate,
+				case 
+					when p.projectState='bg-primary' then "평소"
+					when p.projectState='bg-warning' then "긴급"
+					when p.projectState='bg-danger' then "매우긴급"
+					when p.projectState='bg-success' then "완료"
+				end as projectStateName,
+				p.projectState as projectState,
+				p.projectDeleteYn as projectDeleteYn,
+				group_concat(
+                case j.leaderYn 
+                when "Y" then m.userName
+                end )as leaderName,
+                group_concat(userName) as memberName,
+				ifnull((select truncate(count(case when state="진행완료" then 1 end)/count(*)*100,0)
+				   from workchecklist w
+				  where p.projectNo=w.projectNo
+				  group by projectNo), 0) as persent
+		  from project p
+          left outer join  joinm j
+            on p.projectNo=j.projectNo
+		  left outer join member m
+            on j.userId=m.userId
+		 where projectDeleteYn="N"
+           and userDeleteYn="N"
+			 <choose>
+			 	<when test="searchOption1==1">and projectName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption1==2">and institutionName like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+			<choose> 
+				 <when test="searchOption2==1">and projectState ="bg-primary"</when>
+				 <when test="searchOption2==2">and projectState ="bg-warning"</when>
+				 <when test="searchOption2==3">and projectState ="bg-danger"</when>
+				 <when test="searchOption2==4">and projectState ="bg-success"</when>
+			</choose>
+         group by p.projectNo
+		 order by (case projectState
+		 		   when "bg-danger" then 1
+		 		   when "bg-warning" then 2
+		 		   when "bg-primary" then 3
+		 		   when "bg-success" then 4
+		 		   end
+		 		   )   
+		limit #{currentpageDB},#{paging}
+				 
+	</select>
+	<select id ="selectBoardListCnt" parameterType="hashmap" resultType="int">
+	   SELECT count(*)
+		 FROM project 
+		where projectDeleteYn="N"
+			 <choose>
+			 	<when test="searchOption1==1">and projectName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption1==2">and institutionName like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+			<choose> 
+				 <when test="searchOption2==1">and projectState ="bg-primary"</when>
+				 <when test="searchOption2==2">and projectState ="bg-warning"</when>
+				 <when test="searchOption2==3">and projectState ="bg-danger"</when>
+				 <when test="searchOption2==4">and projectState ="bg-success"</when>
+			</choose>
+	</select>
+	<insert id="insertProject" parameterType="hashmap">
+		<selectKey resultType="int" keyProperty="seq"> 
+			select ifnull(max(CAST(p.projectNo as signed))+1,0) from project p 
+		</selectKey>	
+		insert into Project
+		(
+			projectNo,
+			projectName,
+			institutionName,
+			projectContent,
+			projectImage,
+			projectStartDate,
+			projectEndDate,
+			projectState,
+			projectDeleteYn,
+			createDate,
+			updateDate,
+			createUserId,
+			updateUserId	
+		)values
+		(
+			(select ifnull(max(CAST(p.projectNo as signed))+1,0) from project p order by p.projectNo),
+			#{projectName},
+			#{institutionName},
+			#{projectContent},
+			(case 
+			 when #{projectImage}="/data/" then "/data/noimg.PNG"
+			 else #{projectImage}
+			 end),
+			#{projectStartDate},
+			#{projectEndDate},
+			<choose>
+			 	<when test="projectState==1">"bg-primary",</when>
+			 	<when test="projectState==2">"bg-warning",</when>
+			 	<when test="projectState==3">"bg-danger",</when>
+			 </choose>
+			"N",
+			now(),
+			now(),
+			#{userId},
+			#{userId}
+				)
+	</insert>
+	<insert id="insertProjectLeader" parameterType="hashmap"> 
+		insert into joinm(
+			projectNo,
+			userId,
+			leaderYN
+		)values(
+			(select ifnull(max(CAST(p.projectNo as signed)),0) from project p order by p.projectNo),
+			#{leaderId},
+			'Y'
+		)	
+	</insert>
+	
+	<update id="giveWorkMulti" parameterType="hashmap">
+			 update workchecklist
+			    set state="진행중",
+					updateDate=now(),
+					updateUserId=#{userId},
+					userId=#{JoinId}
+		  where projectNo=#{projectNo}
+		  	and workNo=#{workNo}
+	</update>
+	
+	<select id="selectProjectDetail" parameterType="hashmap" resultType="hashmap">
+		select  projectNo,
+				projectName,
+				institutionName,
+				projectContent,
+				projectImage,
+				concat(substring(projectStartDate,1,4),".",substring(projectStartDate,5,2),".",substring(projectStartDate,7,2)) as projectStartfomDate,
+				concat(substring(projectEndDate,1,4),".",substring(projectEndDate,5,2),".",substring(projectEndDate,7,2)) as projectEndfomDate,
+				projectStartDate,
+				projectEndDate,
+				case 
+					when projectState='bg-primary' then "평소"
+					when projectState='bg-warning' then "긴급"
+					when projectState='bg-danger' then "매우긴급"
+					when projectState='bg-success' then "완료"
+				end as projectStateName,
+				projectState,
+				projectDeleteYn,
+				createDate,
+				updateDate,
+				createUserId,
+				updateUserId
+		  from project
+		 where projectNo=${projectNo}
+	</select>
+	<update id="updateProject" parameterType="hashmap" >
+	     update project
+			set	projectName=#{projectName},
+				institutionName=#{institutionName},
+				projectContent=#{projectContent},
+				projectImage=(case 
+				when #{projectImage}="/data/" then "/data/noimg.PNG"
+				else #{projectImage}
+				end),
+				projectState=			
+			  <choose>
+			 	<when test="projectState==1">"bg-primary"</when>
+			 	<when test="projectState==2">"bg-warning"</when>
+			 	<when test="projectState==3">"bg-danger"</when>
+			 	<when test="projectState==4">"bg-success"</when>
+			 </choose>,
+				projectStartDate=#{projectStartDate},
+				projectEndDate=#{projectEndDate},
+				updateDate=now(),
+				updateUserId=#{userId}
+		  where projectNo=#{projectNo};
+	</update>
+	<update id="deleteProject" parameterType="hashmap" >
+	     update project
+			set	projectDeleteYn="Y"
+		  where projectNo=#{projectNo};
+	</update>
+	<select id="searchMember" parameterType="hashmap" resultType="hashmap">
+		select userId,
+			   userName
+		  from member
+		 where userDeleteYn="N"
+		<if test="searchkeyword != null or searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and userId like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userName like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+		 </if>
+	</select>
+	<insert id="insertCheckList" parameterType="hashmap" >
+		insert into workchecklist
+		(
+			projectNo,
+			workNo,
+			workNum,
+			workSubject,
+			startDate,
+			endDate,
+			state,
+			workContent,
+			memo,
+			createDate,
+			updateDate,
+			createUserId,
+			updateUserId	
+		)values
+		(
+			#{projectNo},
+			(select ifnull(max(cast(w.workNo as signed))+1,0) from workchecklist w),
+			#{workNum},
+			#{workSubject},
+			#{startDate},
+			#{endDate},
+			"신규",
+			#{workContent},
+			#{memo},
+			now(),
+			now(),
+			#{userId},
+			#{userId}
+		)
+	</insert>
+	
+	<select id="selectWorkListAll" parameterType="hashmap" resultType="hashmap">
+		select w.projectNo as projectNo,
+			   w.workNo as workNo,
+			   w.workNum as workNum,
+			   w.workSubject as workSubject,
+			   concat(substring(w.startDate,1,4),".",substring(w.startDate,5,2),".",substring(w.startDate,7,2)) as startDate,
+			   concat(substring(w.endDate,1,4),".",substring(w.endDate,5,2),".",substring(w.endDate,7,2)) as endDate,
+			   w.state as state,
+			   w.memo as memo,
+               m.userName as userName,
+               m.userId as userId
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		 where w.projectNo=#{projectNo}
+		   and w.state="진행중"
+		  <if test="searchkeyword1 != null or searchkeyword1 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 </choose>
+		 </if>
+		 order by (case m.userId
+			 		   when #{userId} then 1
+			 		   else 2
+		 		   end),(endDate-startDate)
+		 limit #{currentpageDB},#{paging}
+	</select>
+	
+	<select id="selectWorkListAllCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		 where w.projectNo=#{projectNo}
+		   and w.state="진행중"
+		  <if test="searchkeyword1 != null or searchkeyword1 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 </choose>
+		 </if>
+	</select>
+	<delete id="workMutliDelete" parameterType="hashmap">
+		delete 
+		  from workchecklist
+		 where projectNo=#{projectNo}
+		   and workNo=#{workNo}
+	</delete>
+	
+	<select id="updateListModalPage" parameterType="hashmap" resultType="hashmap">
+		select *
+		  from workchecklist
+		 where projectNo=#{projectNo}
+		   and workNo=#{workNo}
+	</select>
+	
+	<update id="updateCheckList" parameterType="hashmap">
+		 update workchecklist
+		    set workNum=#{workNum},
+				workSubject=#{workSubject},
+				startDate=#{startDate},
+				endDate=#{endDate},
+				workContent=#{workContent},
+				updateDate=now(),
+				updateUserId=#{userId}
+		  where projectNo=#{projectNo}
+		  	and workNo=#{workNo}
+	</update>
+
+
+	<select id="selectCheckListAll" parameterType="hashmap" resultType="hashmap">
+		select projectNo,
+			   workNo,
+			   workNum,
+			   workSubject,
+			   concat(substring(startDate,1,4),".",substring(startDate,5,2),".",substring(startDate,7,2)) as startDate,
+			   concat(substring(endDate,1,4),".",substring(endDate,5,2),".",substring(endDate,7,2)) as endDate,
+			   memo,
+			   state,
+               (select userName from member 
+               where userId=w.createUserId) as createUserName,
+               (select userName from member 
+               where userId=w.updateUserId) as updateUserName
+		  from workchecklist w
+          left outer join member m
+            on w.userId=m.userId
+		 where projectNo=#{projectNo}
+		   and (state="신규" or state="진행완료")
+		  <if test="searchkeyword2 != null or searchkeyword2 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
+			 </choose>
+			 <choose>
+			 	<when test="searchOption2==0">and state in("신규","진행완료") </when>
+			 	<when test="searchOption2==1">and state = "신규" </when>
+			 	<when test="searchOption2==2">and state = "진행완료" </when>
+			 </choose>
+		 </if>
+		 order by (case state
+		 		   when "신규" then 1
+		 		   else 2
+		 		   end ),(endDate-startDate)
+		 limit #{currentpageDB},#{paging}
+	</select>
+	
+	<select id="selectCheckListAllCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from workchecklist
+		 where projectNo=#{projectNo}
+		   and (state="신규" or state="진행완료")
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
+			 </choose>
+			 <choose>
+			 	<when test="searchOption2==1">and state = "신규"</when>
+			 	<when test="searchOption2==2">and state = "진행완료"</when>
+			 </choose>
+	</select>
+	<update id="medo" parameterType="hashmap">
+			 update workchecklist
+			    set state="진행중",
+					updateDate=now(),
+					updateUserId=#{userId},
+					userId=#{userId}
+		  where projectNo=#{projectNo}
+		  	and workNo=#{workNo}
+	</update>
+	<update id="workCancel" parameterType="hashmap">
+		 update workchecklist
+			set state="신규",
+				updateDate=now(),
+				updateUserId=#{userId},
+				userId=""
+		  where projectNo=#{projectNo}
+		  	and workNo=#{workNo}
+	</update>
+	<select id="updateWorkListModalView" parameterType="hashmap" resultType="hashmap">
+		select *
+		  from workchecklist
+		 where projectNo=#{projectNo}
+		   and workNo=#{workNo}
+	</select>
+	<update id="updateCompleteWorkList" parameterType="hashmap">
+		 update workchecklist
+			set state="진행완료",
+				updateDate=now(),
+				updateUserId=#{userId}
+		  where projectNo=#{projectNo}
+		  	and workNo=#{workNo}
+	</update>
+	<select id="selectWorkCheckList" parameterType="hashmap" resultType="hashmap">
+	
+	select projectNo,truncate(count(case when state="진행완료" then 1 end)/count(*)*100,0) as persent
+		 from workchecklist 
+		group by projectNo
+		
+	</select>
+	<select id="iVproject" parameterType="hashmap" resultType="hashmap">    
+      select * 
+        from project p
+        left outer join joinm j
+        on p.projectNo = j.projectNo
+        where projectDeleteYn="N"
+	</select>	
+	<select id="iVwork" parameterType="hashmap" resultType="hashmap">
+	  select userId,count(*) as count
+        from workchecklist w 
+        left outer join project p
+          on w.projectNo=p.projectNo
+       where projectDeleteYn="N"
+       group by userId
+	</select>
+	
+	<delete id="deletecheckListModalId" parameterType="hashmap">
+		delete 
+		  from workchecklist
+		 where projectNo=#{projectNo}
+		   and workNo=#{workNo}
+	</delete>
+	<select id="workNum" parameterType="hashmap" resultType="int">
+        select count(*) 
+          from workchecklist
+         where userId=#{joinId}
+           and projectNo=#{projectNo}
+           and state="진행중"
+	</select>
+	<select id="userProjectInfo" parameterType="hashmap" resultType="hashmap">
+		select p.projectName as projectName
+		  from project p
+		  left outer join joinm j
+		    on p.projectNo=j.projectNo
+		 where p.projectDeleteYn="N"
+		   and userId=#{gibonId}
+		   and p.projectState!="bg-success"
+	</select>
+	
+	<select id="userWorkList" parameterType="hashmap" resultType="hashmap">
+		select w.projectNo as projectNo,
+			   p.projectName as projectName,
+			   w.workNo as workNo,
+			   w.workNum as workNum,
+			   w.workSubject as workSubject,
+			   concat(substring(w.startDate,1,4),".",substring(w.startDate,5,2),".",substring(w.startDate,7,2)) as startDate,
+			   concat(substring(w.endDate,1,4),".",substring(w.endDate,5,2),".",substring(w.endDate,7,2)) as endDate,
+			   w.state as state,
+			   w.memo as memo,
+               m.userName as userName,
+               m.userId as userId
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{userId}
+		   and w.state="진행중"
+           and p.projectDeleteYn="N"
+         <if test="searchkeyword1 != null or searchkeyword1 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==3">and projectName like concat('%',#{searchkeyword1},'%')</when>
+			 </choose>
+		 </if>
+		 limit #{currentpageDB},#{paging}
+	</select>
+	<select id="userWorkListCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{userId}
+		   and w.state="진행중"
+           and p.projectDeleteYn="N"
+		  <if test="searchkeyword1 != null or searchkeyword1 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==3">and projectName like concat('%',#{searchkeyword1},'%')</when>
+			 </choose>
+		 </if>
+	</select>
+	
+</mapper>
