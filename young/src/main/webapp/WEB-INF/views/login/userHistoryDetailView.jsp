@@ -17,11 +17,10 @@ function removeMemo(obj){
 } */
 </script>
 <!--  -->   
-
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
-                <label>프로젝트명 : ${params.projectName}</label>
+                <label>프로젝트명 : ${updateWorkListModalView.projectName}</label>
                </div>
               </div>
           </div>

@@ -102,7 +102,7 @@ function updateUserWorkListModalView(workNo,projectNo){
 					${params.searchOption1 eq "3" ? "selected" : ""}>프로젝트명</option>
 		</select> 
 		<input name="searchkeyword1" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword1}" onkeypress="if(event.keyCode==13){searchWork1();}" />
-			<button class="btn btn-primary" type="button" onclick="searchWork1()">검색</button>
+			<button class="btn btn-primary" type="button" onclick="searchWork1()"><i class="fa fa-search"></i></button>
 		</span>
 	</div>
 </div>
@@ -112,16 +112,11 @@ function updateUserWorkListModalView(workNo,projectNo){
 <table class="table table-bordered dataTable" id="dataTable" role="grid" width="100%" cellspacing="0">
 	<thead>
 		<tr class="text-center">
-			<th width="20">
 			<c:choose>
 			<c:when test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
-				<input type="checkbox" name="allcheckbox" onclick="allclick();" />
+				<th width="20"><input type="checkbox" name="allcheckbox" onclick="allclick();" /></th>
 			</c:when>
-			<c:otherwise>
-				<input type="checkbox" name="checkbox" name="allcheckbox" onclick="allclick();" disabled="true">
-			</c:otherwise>
 			</c:choose>
-			</th>
 			<th width="40">순번</th>
 			<th>프로젝트명</th>
 			<th>업무번호</th>
@@ -148,9 +143,6 @@ function updateUserWorkListModalView(workNo,projectNo){
 					<c:when test="${params.adminYn=='N' && params.userId==userWorkList.userId}">
 						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo}"></td>
 					</c:when>
-					<c:otherwise>
-						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo}" disabled="true"></td>
-					</c:otherwise>
 				</c:choose>
 				<input type="hidden" name="pN" value="${userWorkList.projectNo}"/>
 				<td>${params.currentpageDB=params.currentpageDB+1}</td>
@@ -232,13 +224,13 @@ function updateUserWorkListModalView(workNo,projectNo){
 		</ul>
 	</div>
 </div>
-</c:if>
 <div class="col-sm-12 col-md-12">
 	<c:if test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
 		<button class="btn btn-primary" type="button" onclick="go_multicomplete()">완료</button>
 		<button class="btn btn-danger" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
 </div>
+</c:if>
 </div>
 </div>
 </div>

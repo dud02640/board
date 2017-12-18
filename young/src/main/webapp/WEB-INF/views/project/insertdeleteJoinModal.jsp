@@ -97,7 +97,7 @@ function selectNReader(userId,userName,leaderNum){
               <div class="col-md-6">
                 <div class="input-group-btn">
                 <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchMember();}"/>
-                <button class="btn btn-primary" type="button" onclick="searchMember()">검색</button>
+                <button class="btn btn-primary" type="button" onclick="searchMember()"><i class="fa fa-search"></i></button>
 				</div>	
               </div>
             </div>

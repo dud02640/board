@@ -108,16 +108,17 @@ $(function(){
 						<div class="row">
 							<div class="col-md-12">
 								<div class="dataTables_filter" id="dataTable_filter">
-									<span class="input-group-btn"> 
+									<span class="input-group-btn col-md-8"> 
 										<select class="form-control" name="searchOption">
 												<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>이름</option>
 												<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>아이디</option>
 												<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>소속</option>
 												<option value="4" ${params.searchOption eq "4" ? "selected" : ""}>직책</option>
-										</select> 
+										</select>
 										<input type="text" class="form-control" name="searchkeyword" value="${params.searchkeyword}"/>
-										<button class="btn btn-primary" type="submit" onclick="searchMember()">검색</button>
+										<button class="btn btn-primary" type="submit" onclick="searchMember()"><i class="fa fa-search"></i></button>
 										<button class="btn btn-primary" type="button" onclick="insertMember()">회원가입</button>
+ 
 									</span>	
 								</div>
 							</div>
@@ -184,7 +185,6 @@ $(function(){
 						<div class="row">
 						<!-- 페이징 -->
 						<c:if test="${membercnt>0}">
-						<div class="col-sm-12">
 						<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 						<ul class="pagination">
 							<c:if test="${params.selectPage-1!=0}">
@@ -208,7 +208,6 @@ $(function(){
 						<input type="hidden" name="startpage" value="${params.startpage}"/>
 						<input type="hidden" name="endpageNo" value="${params.endpageNo}"/>
 						</ul>
-						</div>
 						</div>
 						</c:if>
 						</div>

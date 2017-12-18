@@ -95,7 +95,7 @@ function userIndivisualView(gibonId){
 		<div class="content-wrapper">
 			<div class="container-fluid">
 				<!-- Breadcrumbs-->
-				<ol class="breadcrumb">
+				<ol class="breadcrumb fontsize13em">
 					<li class="breadcrumb-item"><a href="#">개인</a></li>
 					<li class="breadcrumb-item active">개인 참여 현황</li>
 				</ol>

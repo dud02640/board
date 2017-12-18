@@ -246,8 +246,9 @@
             </div>
             <div class="form-row">
               <div class="col-md-6">
-                <label>*전화번호</label>
+                <label>회원사진등록</label>
                 <input type="file" name="userImage" accept=".gif, .jpg, .png"/>
+                <label>기존 사진 : ${memberinfo.userImage}</label>
               </div>
             </div>
           </div>

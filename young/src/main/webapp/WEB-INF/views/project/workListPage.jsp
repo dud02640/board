@@ -83,7 +83,7 @@ function updateWorkList(workNo){
 							<option value="1" ${params.searchOption1 eq "1" ? "selected" : ""}>업무번호</option>
 							<option value="2" ${params.searchOption1 eq "2" ? "selected" : ""}>업무명</option>
 					</select> <input name="searchkeyword1" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword1}" onkeypress="if(event.keyCode==13){searchWork1();}" />
-						<button class="btn btn-primary" type="submit" onclick="searchWork1()">검색</button>
+						<button class="btn btn-primary" type="submit" onclick="searchWork1()"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</div>
@@ -111,7 +111,6 @@ function updateWorkList(workNo){
 		<c:if test="${selectWorkListAllCnt>0}">
 			<c:forEach var="selectWorkListAll" items="${selectWorkListAll}" varStatus="status">
 			<tr>
-
 					<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
 					<input type="hidden" name="pN" value="${selectWorkListAll.projectNo}">
 					<td>${params.currentpageDB=params.currentpageDB+1}</td>

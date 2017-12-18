@@ -1,5 +1,7 @@
 package com.young.project.controller;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -189,26 +192,34 @@ public class projectController {
 	}
 	
 	@RequestMapping(value = "/project/insertProject.do")
-	public String insertProject(HttpServletResponse response,HttpServletRequest req,@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params){	
+	public String insertProject(HttpServletResponse response,HttpServletRequest req,@RequestParam("projectImage") MultipartFile file,@RequestParam Map<String,Object> params) throws IOException{	
 		System.out.println(params);
 		String mes=URLEncoder.encode(params.get("mes").toString());
 		
 		HttpSession session = req.getSession();
-		
+		String db_url="/thumnail/"+file.getOriginalFilename();
 		/*	  서버에 이미지나 문서 업로드시 서버 세팅(Tomcat기준)  */
 		/*	 server.xml <Context docBase> 밑에 추가 논리주소 물리주소 같게 해주기  */
-		/*<Context docBase="C:\data" path="/data" reloadable="true" /> */	
-		String path="C:\\data\\"+ file.getOriginalFilename();
-		String db_url="/data/"+file.getOriginalFilename();
-		
-		File f =new File(path);
-		
+		/*<Context docBase="C:\thumnail" path="/thumnail" reloadable="true" /> */
+
+		if(file.isEmpty()) {
+			db_url="/thumnail/noimg.PNG";
+		}else {	
+			File thum =new File("C:\\thumnail\\"+ file.getOriginalFilename());
+			int w=200;
+			int h=200;
+			BufferedImage originalImg = ImageIO.read(file.getInputStream()); 
+			BufferedImage thumbnailImg = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			Graphics2D g = thumbnailImg.createGraphics(); 
+			g.drawImage(originalImg, 0, 0, w, h, null); 
+			ImageIO.write(thumbnailImg, "jpg", thum);	
+		}
 		try {
-			file.transferTo(f);
+
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-		params.put("userImage",  db_url);
+		params.put("projectImage",  db_url);
 		
 		String projectContent=(String) params.get("projectContent");
 		projectContent = projectContent.replace("\r\n","<br>");
@@ -234,17 +245,27 @@ public class projectController {
 		HttpSession session = req.getSession();
 		String projectContent=(String) params.get("projectContent");
 		projectContent = projectContent.replace("\r\n","<br>");
-		
+		String db_url="/thumnail/"+file.getOriginalFilename();
 		/*	  서버에 이미지나 문서 업로드시 서버 세팅(Tomcat기준)  */
 		/*	 server.xml <Context docBase> 밑에 추가 논리주소 물리주소 같게 해주기  */
-		/*<Context docBase="C:\data" path="/data" reloadable="true" /> */
-		String path="C:\\data\\"+ file.getOriginalFilename();
-		String db_url="/data/"+file.getOriginalFilename();
-		
-		File f =new File(path);
-		
+		/*<Context docBase="C:\thumnail" path="/thumnail" reloadable="true" /> */
+
+		if(file.isEmpty()) {
+			db_url="/thumnail/noimg.PNG";
+		}else {	
+			File thum =new File("C:\\thumnail\\"+ file.getOriginalFilename());
+			int w=200;
+			int h=200;
+			BufferedImage originalImg = ImageIO.read(file.getInputStream()); 
+			BufferedImage thumbnailImg = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			Graphics2D g = thumbnailImg.createGraphics(); 
+			g.drawImage(originalImg, 0, 0, w, h, null); 
+			ImageIO.write(thumbnailImg, "jpg", thum);
+			g.dispose();
+		}
+		System.out.println(file.getInputStream());
 		try {
-			file.transferTo(f);
+
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}

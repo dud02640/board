@@ -1,5 +1,6 @@
 package com.young.login.controller;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -130,20 +131,30 @@ public class loginController {
 	public String insertmember(HttpServletRequest req,@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params, Model model,HttpServletResponse response) throws IOException {
 		String mes=URLEncoder.encode(params.get("mes").toString());
 		
+		String db_url="/thumnail/"+file.getOriginalFilename();
 		/*	  서버에 이미지나 문서 업로드시 서버 세팅(Tomcat기준)  */
 		/*	 server.xml <Context docBase> 밑에 추가 논리주소 물리주소 같게 해주기  */
-		/*<Context docBase="C:\data" path="/data" reloadable="true" /> */
-		String path="C:\\data\\"+ file.getOriginalFilename();
-		String db_url="/data/"+file.getOriginalFilename();
-		
-		File f =new File(path);
-		params.put("userImage", db_url);
+		/*<Context docBase="C:\thumnail" path="/thumnail" reloadable="true" /> */
+
+		if(file.isEmpty()) {
+			db_url="/thumnail/noimg.PNG";
+		}else {	
+			File thum =new File("C:\\thumnail\\"+ file.getOriginalFilename());
+			int w=200;
+			int h=200;
+			BufferedImage originalImg = ImageIO.read(file.getInputStream()); 
+			BufferedImage thumbnailImg = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			Graphics2D g = thumbnailImg.createGraphics(); 
+			g.drawImage(originalImg, 0, 0, w, h, null); 
+			ImageIO.write(thumbnailImg, "jpg", thum);	
+		}
 		try {
-			file.transferTo(f);
+			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 		
+		params.put("userImage",  db_url);
 		loginService.insertMember(params);		
 		
 		model.addAttribute("member",params);
@@ -214,15 +225,25 @@ public class loginController {
 	@RequestMapping(value = "/login/updatemember.do")
 	public String memberupdatedo(HttpServletRequest req,@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException {
 		
-		System.out.println("@@@@####"+params);
-		String root_path= req.getSession().getServletContext().getRealPath("/");
-		String path=root_path+"data\\"+ file.getOriginalFilename();
-		String db_url="/data/"+file.getOriginalFilename();
-		
-		File f =new File(path);
-		
+		String db_url="/thumnail/"+file.getOriginalFilename();
+		/*	  서버에 이미지나 문서 업로드시 서버 세팅(Tomcat기준)  */
+		/*	 server.xml <Context docBase> 밑에 추가 논리주소 물리주소 같게 해주기  */
+		/*<Context docBase="C:\thumnail" path="/thumnail" reloadable="true" /> */
+
+		if(file.isEmpty()) {
+			db_url="/thumnail/noimg.PNG";
+		}else {	
+			File thum =new File("C:\\thumnail\\"+ file.getOriginalFilename());
+			int w=200;
+			int h=200;
+			BufferedImage originalImg = ImageIO.read(file.getInputStream()); 
+			BufferedImage thumbnailImg = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			Graphics2D g = thumbnailImg.createGraphics(); 
+			g.drawImage(originalImg, 0, 0, w, h, null); 
+			ImageIO.write(thumbnailImg, "jpg", thum);	
+		}
 		try {
-			file.transferTo(f);
+			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -431,17 +452,27 @@ public class loginController {
 	
 	@RequestMapping(value = "/login/updatUserInfo.do")
 	public String updatUserInfo(@RequestParam("userImage") MultipartFile file,HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException {
-		System.out.println("@###!!!"+params);
+
+		String db_url="/thumnail/"+file.getOriginalFilename();
 		/*	  서버에 이미지나 문서 업로드시 서버 세팅(Tomcat기준)  */
 		/*	 server.xml <Context docBase> 밑에 추가 논리주소 물리주소 같게 해주기  */
-		/*<Context docBase="C:\data" path="/data" reloadable="true" /> */
-		String path="C:\\data\\"+ file.getOriginalFilename();
-		String db_url="/data/"+file.getOriginalFilename();
-		
-		File f =new File(path);
+		/*<Context docBase="C:\thumnail" path="/thumnail" reloadable="true" /> */
+
+		if(file.isEmpty()) {
+			db_url="/thumnail/noimg.PNG";
+		}else {	
+			File thum =new File("C:\\thumnail\\"+ file.getOriginalFilename());
+			int w=200;
+			int h=200;
+			BufferedImage originalImg = ImageIO.read(file.getInputStream()); 
+			BufferedImage thumbnailImg = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			Graphics2D g = thumbnailImg.createGraphics(); 
+			g.drawImage(originalImg, 0, 0, w, h, null); 
+			ImageIO.write(thumbnailImg, "jpg", thum);	
+		}
 		
 		try {
-			file.transferTo(f);
+			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -517,14 +548,8 @@ public class loginController {
 		return "/login/userHistoryModal";
 	}
 	@RequestMapping(value = "/login/saveImg.do")
-	public String saveImg(SessionStatus status,HttpServletRequest req,@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params) throws IllegalStateException, IOException {
+	public String saveImg(HttpServletRequest req,@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params) throws IllegalStateException, IOException {
 		
-		System.out.println("#############"+params);
-	
-		String path="C:\\data\\"+ file.getOriginalFilename();
-		String db_url="/data/"+file.getOriginalFilename();
-		
-		File f =new File(path);
 /*		BufferedImage img = ImageIO.read(f);
 		BufferedImage thumbImg=Scalr.resize(img,Method.QUALITY,Mode.AUTOMATIC,50,50,Scalr.OP_ANTIALIAS);
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -532,19 +557,33 @@ public class loginController {
 		File f1 =new File(root_path+"data\\"+ file.getOriginalFilename());
 		ImageIO.write(thumbImg, "jpg",f1);*/
 		
+		String db_url="/thumnail/"+file.getOriginalFilename();
 		/*	  서버에 이미지나 문서 업로드시 서버 세팅(Tomcat기준)  */
 		/*	 server.xml <Context docBase> 밑에 추가 논리주소 물리주소 같게 해주기  */
-		/*<Context docBase="C:\data" path="/data" reloadable="true" /> */
+		/*<Context docBase="C:\thumnail" path="/thumnail" reloadable="true" /> */
+
+		if(file.isEmpty()) {
+			db_url="/thumnail/noimg.PNG";
+		}else {	
+			File thum =new File("C:\\thumnail\\"+ file.getOriginalFilename());
+			int w=200;
+			int h=200;
+			BufferedImage originalImg = ImageIO.read(file.getInputStream()); 
+			BufferedImage thumbnailImg = new BufferedImage(w, h, BufferedImage.TYPE_3BYTE_BGR);
+			Graphics2D g = thumbnailImg.createGraphics(); 
+			g.drawImage(originalImg, 0, 0, w, h, null); 
+			ImageIO.write(thumbnailImg, "jpg", thum);	
+		}
+		
 		try {
-			file.transferTo(f);
+			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
 		
-		params.put("userImage",  db_url);
+		params.put("userImage", db_url);
 		loginService.insertSaveImg(params);
 				
-		status.setComplete();
 		return "forward:/login/userIndivisualView.do";
 	}
 	

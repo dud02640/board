@@ -66,7 +66,7 @@ function userHistoryDetailView(workNo,projectNo,projectName){
 						<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>프로젝트명</option>
 				</select> 
                 <input name="searchkeyword" class="form-control" type="text" maxlength="30" style="width: 300px;" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork()}"/>
-                <button class="btn btn-primary" type="button" onclick="searchWork()">검색</button>
+                <button class="btn btn-primary" type="button" onclick="searchWork()"><i class="fa fa-search"></i></button>
                 </span>
 				</div>	
        </div>

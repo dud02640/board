@@ -299,7 +299,7 @@ function go_multidel(){
 					<div class="row">
 							<div class="media">
 							<div class="media-header col">
-							<img whidth="200" height="200" src="${projectdetail.projectImage}">
+							<img src="${projectdetail.projectImage}">
 							</div>
 							<div class="media-body">
 								<ul class="list-inline mb-0">팀장 :
@@ -317,6 +317,7 @@ function go_multidel(){
 								<ul class="list-inline mb-0">기간 : ${projectdetail.projectStartfomDate} ~ ${projectdetail.projectEndfomDate}  </ul>
 								<ul class="list-inline mb-0">내용 : ${projectdetail.projectContent} </ul>	
 							</div>
+							<div class="media-footer">
 							</div>
 						</div>
 						<div class="row">
@@ -436,8 +437,9 @@ function go_multidel(){
             </div>
             <div class="form-row">
               <div class="col-md-6">
-                <label>*프로젝트 사진 등록</label>
-                <input type="file" name="projectImage" accept=".gif, .jpg, .png"/>
+                <label>프로젝트 사진 등록</label>
+                <input type="file" name="projectImage" accept=".gif, .jpg, .png" />
+                <label>기존 사진 : ${projectdetail.projectImage}</label>
               </div>
             </div>
             <div class="form-row">

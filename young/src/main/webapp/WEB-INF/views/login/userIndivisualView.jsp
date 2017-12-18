@@ -321,10 +321,10 @@ function checkPhone(){
 						<div class="row">
 							<div class="media">
 								<div class="media-header col">
-									<img whidth="200" height="200" src="${userInfo.userImage}">
+									<img src="${userInfo.userImage}">
 								</div>
 								<div class="media-body">
-									<ul class="list-inline mb-0">>개인정보	</ul>
+									<ul class="list-inline mb-0">(1)개인정보	</ul>
 									<ul class="list-inline mb-0">이름 : ${userInfo.userName}</ul>
 									<ul class="list-inline mb-0">직책 : ${userInfo.userRank}</ul>
 									<ul class="list-inline mb-0">소속 : ${userInfo.userPosition}</ul>
@@ -333,7 +333,7 @@ function checkPhone(){
 									<ul class="list-inline mb-0"></ul>							
 								</div>
 								<div class="media-footer col">
-								<ul class="list-inline mb-0">>진행중인 프로젝트</ul>	
+								<ul class="list-inline mb-0">(2)진행중인 프로젝트</ul>	
 								<c:forEach var="userProjectInfo" items="${userProjectInfo}" >
 									<li>${userProjectInfo.projectName}</li>
 								</c:forEach>
@@ -406,8 +406,7 @@ function checkPhone(){
 				<div class="modal-content">
 					<div class="modal-header">
 						<h4 class="modal-title">비밀번호 확인</h4>
-						<button type="button" class="close" data-dismiss="modal"
-							onclick="refresh('${userInfo.userId}')">
+						<button type="button" class="close" data-dismiss="modal" onclick="refresh('${userInfo.userId}')">
 							<span>x</span>
 						</button>
 					</div>
@@ -416,7 +415,7 @@ function checkPhone(){
 							<div class="col-md-6">
 								<label>*비밀번호 입력</label>
 								<div class="input-group-btn">
-									<input class="form-control" type="password" name="pwcheck" />
+									<input class="form-control" type="password" name="pwcheck" onkeypress="if(event.keyCode==13){pwCheck()}"/>
 								</div>
 							</div>
 						</div>
@@ -552,8 +551,9 @@ function checkPhone(){
 								<label style="color: red" id="phN_message"></label>
 								<div class="form-row">
 									<div class="col-md-6">
-										<label">*프로젝트 사진 등록</label> 
-										 <input type="file" name="userImage" accept=".gif, .jpg, .png"/>
+										<label>회원 사진 등록</label> 
+										<input type="file" name="userImage" accept=".gif, .jpg, .png"/>
+										<label>기존 사진 : ${userInfo.userImage}</label>
 									</div>
 								</div>
 							</div>

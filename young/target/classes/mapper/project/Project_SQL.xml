@@ -97,7 +97,7 @@
 			#{institutionName},
 			#{projectContent},
 			(case 
-			 when #{projectImage}="/data/" then "/data/noimg.PNG"
+			 when #{projectImage}="/thumnail/" then "/thumnail/noimg.PNG"
 			 else #{projectImage}
 			 end),
 			#{projectStartDate},
@@ -167,7 +167,7 @@
 				institutionName=#{institutionName},
 				projectContent=#{projectContent},
 				projectImage=(case 
-				when #{projectImage}="/data/" then "/data/noimg.PNG"
+				when #{projectImage}="/thumnail/" then "/thumnail/noimg.PNG"
 				else #{projectImage}
 				end),
 				projectState=			
@@ -259,7 +259,7 @@
 		 order by (case m.userId
 			 		   when #{userId} then 1
 			 		   else 2
-		 		   end),(endDate-startDate)
+		 		   end),(endDate-now())
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
@@ -337,7 +337,7 @@
 		 order by (case state
 		 		   when "신규" then 1
 		 		   else 2
-		 		   end ),(endDate-startDate)
+		 		   end ),(endDate-now())
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
@@ -375,9 +375,11 @@
 	</update>
 	<select id="updateWorkListModalView" parameterType="hashmap" resultType="hashmap">
 		select *
-		  from workchecklist
-		 where projectNo=#{projectNo}
-		   and workNo=#{workNo}
+		  from workchecklist w
+          left outer join project p
+          on p.projectNo=w.projectNo
+		 where w.projectNo=#{projectNo}
+		   and w.workNo=#{workNo}
 	</select>
 	<update id="updateCompleteWorkList" parameterType="hashmap">
 		 update workchecklist

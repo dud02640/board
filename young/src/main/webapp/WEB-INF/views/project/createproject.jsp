@@ -148,8 +148,8 @@ function go_main(){
             </c:if>
             <div class="form-row">
               <div class="col-md-6">
-                <label>*프로젝트 사진 등록</label>
-                <input type="file" class="label" name="userImage" accept=".gif, .jpg, .png"/>
+                <label>프로젝트 사진 등록</label>
+                <input type="file" class="label" name="projectImage" accept=".gif, .jpg, .png"/>
                 </div>
             </div>
             <div class="form-row">

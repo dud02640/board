@@ -28,7 +28,7 @@
 			#{userEmail},
 			"N",
 			(case 
-			 when #{userImage}="/data/" then "/data/noimg.PNG"
+			 when #{userImage}="/thumnail/" then "/thumnail/noimg.PNG"
 			 else #{userImage}
 			 end),
 			#{userPhoneNumber},
@@ -115,7 +115,7 @@
 		  where m.userDeleteYn="N"
 		    and m.adminYn ="N"
 		  <if test="searchkeyword != null"> <!-- 우선 or 로 빈칸체크 안됨 -->
-			and ((m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
+			and (m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
 		  </if>
   		  order by (case leaderYn
 			  			when "Y" then 1
@@ -127,14 +127,19 @@
 	<select id ="selectWorkJoinListCnt" parameterType="hashmap" resultType="int">
 	     select count(*) 
 	       from joinm j
-	      right outer join member m
+	       left outer join member m
 	         on j.userId=m.userId
-		  where projectNo=#{projectNo}
-	        and userDeleteYn="N"
-	        and adminYn="N";
+		  where j.projectNo=#{projectNo}
+	        and m.userDeleteYn="N"
+	        and m.adminYn="N"
  		<if test="searchkeyword != null"> 
-			and ((userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+			and (m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
 		</if>
+	  		  order by (case leaderYn
+		  			when "Y" then 1
+                    when "N" then 2
+                    else 3
+                   end)
 	</select>
 	
 	<select id ="selectMemberCnt" parameterType="hashmap" resultType="int">
@@ -169,7 +174,7 @@
 				userRank=#{userRank},
 				userPosition=#{userPosition},
 				userImage=(case 
-				when #{userImage}="/data/" then "/data/noimg.PNG"
+				when #{userImage}="/thumnail/" then "/thumnail/noimg.PNG"
 				else #{userImage}
 				end),
 				userEmail=#{userEmail},
