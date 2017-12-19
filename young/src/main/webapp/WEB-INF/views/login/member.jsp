@@ -233,7 +233,7 @@
           <label style="color:red" id="phN_message"></label>
           <div class="form-row">
               <div class="col-md-6">
-                <label>프로젝트 사진 등록</label>
+                <label>회원 사진 등록</label>
                 <input type="file" name="userImage" accept=".gif, .jpg, .png"/>
               </div>
 	       </div>

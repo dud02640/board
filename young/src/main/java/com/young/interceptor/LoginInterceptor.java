@@ -14,17 +14,14 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.young.login.sevice.loginService;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter{
-	
-	@Resource(name="loginService")
-	private loginService loginService;
-	
+
     public boolean preHandle(HttpServletRequest req, HttpServletResponse response,Object handler) {
     	String userId=(String) req.getSession().getAttribute("userId");
     	String userPw=(String) req.getSession().getAttribute("userPw");
 
     	try {
             if(userId == null){
-                    response.sendRedirect("/login/login.do");
+            		response.sendRedirect("/login/login.do");	
 /*                	System.out.println("@@@@@@@@@@@@@"+userId);
                 	System.out.println(userPw);*/
                     return false;              

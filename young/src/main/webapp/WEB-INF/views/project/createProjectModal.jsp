@@ -38,7 +38,7 @@ function choiceLeader(leaderId,userName){
             <div class="form-row">
               <div class="col-md-6">
                 <div class="input-group-btn">
-                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}"/>
+                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchMember();}"/>
                 <button class="btn btn-primary" type="button" onclick="searchMember()"><i class="fa fa-search"></i></button>
 				</div>	
               </div>
@@ -54,20 +54,25 @@ function choiceLeader(leaderId,userName){
                 		</tr>
                 	</thead>
                 	<tbody>
+                	<c:if test="${membercnt>0}">
                 	<c:forEach var="indivisualView" items="${indivisualView}" varStatus="status">
                 		<tr>
 							<td>${indivisualView.userName}</td>
 							<td>${indivisualView.userId}</td>
-							<td><button class="btn btn-default" onclick="choiceLeader('${indivisualView.userId}','${indivisualView.userName}')">팀장선택</button></td>
+							<td><button class="btn btn-default" type="button" onclick="choiceLeader('${indivisualView.userId}','${indivisualView.userName}')">팀장선택</button></td>
                 		</tr>
                 	</c:forEach>
+                	</c:if>
+                	<c:if test="${membercnt<=0}">
+                		<td colsapn="3">검색한 결과가 없습니다.</td>
+                	</c:if>
              		</tbody>
                 </table>
               </div>
             </div>
            </div>
       <!-- 페이징 -->
-      <c:if test="${indivisualViewCnt>0}">
+      <c:if test="${membercnt>0}">
 		<div class="col-sm-12 col-md-7">
 		<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 		<ul class="pagination">
@@ -100,4 +105,5 @@ function choiceLeader(leaderId,userName){
 		</div>
 		</div>
 		</c:if>
+		
 		<!-- 페이징 -->

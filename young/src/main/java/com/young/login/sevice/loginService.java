@@ -50,4 +50,8 @@ public interface loginService {
 
 	void insertSaveImg(Map<String, Object> params);
 
+	List<Map<String, Object>> indivisualcreateView(Map<String, Object> params);
+
+	int indivisualcreateViewCnt(Map<String, Object> params);
+
 }

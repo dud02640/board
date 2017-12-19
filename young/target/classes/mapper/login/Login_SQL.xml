@@ -65,8 +65,8 @@
 		 order by (case userDeleteYn
 		 		   when "N" then 1
 		 		   else 2
-		 		   end)
-		 limit #{currentpageDB},#{paging};
+		 		   end),createDate desc
+		 limit #{currentpageDB},#{paging}
 	</select>
 	
 	<!-- join페이징 -->
@@ -308,5 +308,26 @@
 		   set userImage=#{userImage}
 		 where userId=#{gibonId}
 	</insert>
+	
+	<select id="indivisualcreateView" parameterType="hashmap" resultType="hashmap">
+		select *
+		  from member
+		 where userDeleteYn="N"
+		   and adminYn="N"
+		<if test="searchkeyword != null"> 
+			and (userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+		</if>
+		limit #{currentpageDB},#{paging}
+	</select>
+	
+	<select id="indivisualcreateViewCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from member
+		 where userDeleteYn="N"
+		   and adminYn="N"
+		<if test="searchkeyword != null"> 
+			and (userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+		</if>
+	</select>
 
 </mapper>

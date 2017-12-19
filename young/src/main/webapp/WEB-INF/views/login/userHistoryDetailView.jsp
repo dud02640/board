@@ -45,7 +45,7 @@ function removeMemo(obj){
               <div class="col-md-12">
                 <label>*업무 세부내용</label>
                 <div class="input-group-btn">
-                <textarea name="workContent" class="form-control" maxlength="1000" readOnly>${updateWorkListModalView.workContent}</textarea>
+                <textarea name="workContent" class="form-control" maxlength="1000" rows="5" readOnly>${updateWorkListModalView.workContent}</textarea>
 				</div>
               </div>
             </div>

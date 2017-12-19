@@ -83,7 +83,7 @@ $(function(){
               <div class="col-md-6">
                 <label>*업무 세부내용</label>
                 <div class="input-group-btn">
-                <textarea id="workContent" name="workContent" class="form-control" maxlength="1000"/>
+                <textarea id="workContent" name="workContent" class="form-control" maxlength="1000" rows="5"/>
 				</div>
               </div>
             </div>

@@ -112,7 +112,7 @@ function removeMemo(obj){
               <div class="col-md-6">
                 <label>*업무 세부내용</label>
                 <div class="input-group-btn">
-                <textarea name="workContent" class="form-control" maxlength="1000">${updateWorkListModalView.workContent}</textarea>
+                <textarea name="workContent" class="form-control" maxlength="1000" rows="5">${updateWorkListModalView.workContent}</textarea>
 				</div>
               </div>
             </div>
@@ -146,11 +146,11 @@ function removeMemo(obj){
             <div id="memofield">
             </div> -->
       </div>
-      <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
+      <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y' || joinMemberCheck.leaderYn=='Y'}">
       	<button type="button" class="btn btn-primary" onclick="updateWorkListModalId()">수정</button>
       </c:if>
 <!--       <button type="button" class="btn btn-primary" onclick="openMemo()">메모작성</button> -->
-      <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
+      <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y' || joinMemberCheck.leaderYn=='Y'}">
         <button type="button" class="btn btn-danger" onclick="workCancel(${updateWorkListModalView.workNo})">취소하기</button>
       	<button type="button" class="btn btn-primary" onclick="completeWorkList()">완료하기</button>
 	  </c:if>

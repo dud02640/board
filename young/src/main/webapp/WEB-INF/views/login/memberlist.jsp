@@ -106,22 +106,19 @@ $(function(){
 				<div class="table-responsive">
 					<div class="dataTables_wrapper container-fluid dt-bootstrap4" id="dataTable_wrapper">
 						<div class="row">
-							<div class="col-md-12">
-								<div class="dataTables_filter" id="dataTable_filter">
-									<span class="input-group-btn col-md-8"> 
+									<div class="pull-left">
 										<select class="form-control" name="searchOption">
 												<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>이름</option>
 												<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>아이디</option>
 												<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>소속</option>
 												<option value="4" ${params.searchOption eq "4" ? "selected" : ""}>직책</option>
 										</select>
+									</div>
+									<div class="pull-left">	
 										<input type="text" class="form-control" name="searchkeyword" value="${params.searchkeyword}"/>
-										<button class="btn btn-primary" type="submit" onclick="searchMember()"><i class="fa fa-search"></i></button>
-										<button class="btn btn-primary" type="button" onclick="insertMember()">회원가입</button>
- 
-									</span>	
-								</div>
-							</div>
+									</div>
+									<button class="btn btn-primary pull-left" type="submit" onclick="searchMember()"><i class="fa fa-search"></i></button>
+									<button class="btn btn-primary fa-pull-right" type="button" onclick="insertMember()">회원가입</button>
 						</div>
 						<input type="hidden" id="mes" name="mes"/>
 						<div class="row">
@@ -182,10 +179,10 @@ $(function(){
 								</table>
 							</div>
 						</div>
-						<div class="row">
+						<div class="row-fluid">
 						<!-- 페이징 -->
 						<c:if test="${membercnt>0}">
-						<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+						<div class="dataTables_paginate paging_simple_numbers pull-left" id="dataTable_paginate">
 						<ul class="pagination">
 							<c:if test="${params.selectPage-1!=0}">
 							<li class="paginate_button page-item prvious disable"><button name="prv" class="page-link" onclick="searchMember(${params.selectPage - 1})">이전</button></li>
@@ -210,12 +207,8 @@ $(function(){
 						</ul>
 						</div>
 						</c:if>
-						</div>
 						<!-- 페이징 -->
-						<div class="row">
-						<div>
-							<button class="btn btn-danger" type="button" onclick="go_multidel();">삭제</button>
-						</div>
+							<button class="btn btn-danger pull-right" type="button" onclick="go_multidel();">삭제</button>
 						</div>
 					</div>
 				</div>

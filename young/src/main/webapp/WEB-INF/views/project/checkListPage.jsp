@@ -6,6 +6,7 @@ $(function(){
 	$('form').submit(function() {return false;});	
 });
 function searchWork2(pIndex){
+
 	$('input[name=selectPage]').val(pIndex);
 	
 	var frm =$("#projectDetailForm").serialize();
@@ -21,7 +22,11 @@ function searchWork2(pIndex){
 		}
 	}); 
 }
-
+function searchkeyCode2(){
+	if(window.event.keyCode==13){
+		searchWork2();
+	}
+}
 function allclick2(){
 		$('input:checkbox[name=checkbox2]').not(":disabled").prop("checked",$('input:checkbox[name=allcheckbox2]').is(":checked"));
 }
@@ -94,7 +99,7 @@ function mutiDo(){
 						<option value="1" ${params.searchOption2 eq "1" ? "selected" : ""}>신규</option>
 						<option value="2" ${params.searchOption2 eq "2" ? "selected" : ""}>진행완료</option>
 				</select> 
-                <input name="searchkeyword2" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword2}" onkeypress="if(event.keyCode==13){searchWork2();}"/>
+                <input name="searchkeyword2" id="searchkeyword2" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword2}" onkeypress="searchkeyCode2()"/>
                 <button class="btn btn-primary" type="button" onclick="searchWork2()"><i class="fa fa-search"></i></button>
                 </span>
 				</div>	

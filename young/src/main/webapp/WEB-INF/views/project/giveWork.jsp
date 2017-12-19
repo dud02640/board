@@ -32,13 +32,20 @@ function giveWorkMulti(userId,userName){
  	  			frm.submit();
  	  		}
 }
+
+function searchkeyCode3(){
+	if(window.event.keyCode==13){
+		searchMember3();
+	}
+}
+
 </script>
 <!--  -->
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
                 <div class="input-group-btn">
-                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchMember3();}"/>
+                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}" onkeypress="searchkeyCode3();" />
                 <button class="btn btn-primary" type="button" onclick="searchMember3()"><i class="fa fa-search"></i></button>
 				</div>	
               </div>

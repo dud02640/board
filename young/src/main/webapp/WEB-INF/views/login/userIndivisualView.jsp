@@ -260,12 +260,19 @@ function checkPhone(){
 	  			},
 	  		});
 	} 
+ 	
  	function saveImg(){
  		var frm = document.getElementById('userindivisualForm');
 		frm.action="/login/saveImg.do";
 	  	frm.submit();
  	}
 
+	function projectDetailView(projectNo) {
+		var frm = document.getElementById('userindivisualForm');
+		$('input[name=projectNo]').val(projectNo);
+		frm.action = "/project/projectDetailView.do";
+		frm.submit();
+	}
 </script>
 </head>
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -335,7 +342,7 @@ function checkPhone(){
 								<div class="media-footer col">
 								<ul class="list-inline mb-0">(2)진행중인 프로젝트</ul>	
 								<c:forEach var="userProjectInfo" items="${userProjectInfo}" >
-									<li>${userProjectInfo.projectName}</li>
+									<li><a href="#" onclick="projectDetailView(${userProjectInfo.projectNo})">${userProjectInfo.projectName}</a></li>
 								</c:forEach>
 								<!-- <input type="file" name="userImage" accept=".gif, .jpg, .png"/><button type="button" onclick="saveImg()">저장</button> -->
 								</div>
@@ -368,6 +375,7 @@ function checkPhone(){
 		</div>
 		<input type="hidden" name="userId" id="userId" value="${userInfo.userId}" />
 		<input type="hidden" name="gibonId" value="${userInfo.userId}" />
+		<input type="hidden" name="projectNo" id="projectNo" />
 		<!-- optionModal -->
 		<div class="modal fade" id="optionModal">
 			<div class="modal-dialog">
@@ -484,13 +492,11 @@ function checkPhone(){
 									<div class="col-md-6">
 										<input type="hidden" id="mes" name="mes"> <label>*아이디</label>
 										<div class="input-group-btn">
-											<input name="userId1" id="userId1" class="form-control"
-												type="text" value="${userInfo.userId}" maxlength="8"
-												oninput="checkId()" disabled> <input type="hidden"
-												name="gibonId" value="${userInfo.userId}">
+											<input name="userId1" id="userId1" class="form-control" type="text" value="${userInfo.userId}" maxlength="8" oninput="checkId()" disabled>
+										<input type="hidden" name="gibonId" value="${userInfo.userId}">
 										</div>
-										<label style="color: green" id="Ymessage"></label> <label
-											style="color: red" id="Nmessage"></label>
+										<label style="color: green" id="Ymessage"></label> 
+										<label style="color: red" id="Nmessage"></label>
 									</div>
 								</div>
 								<div class="form-row">

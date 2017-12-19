@@ -157,16 +157,16 @@ function go_main(){
                 <label>내용</label>
                 </div>
             </div>
-            <div class="form-row" width="1000">
-              <div class="col-md-6 ">
-                <textarea  name="projectContent" class="textarea"  maxlength="1000"></textarea>
+            <div class="form-row">
+              <div class="col-md-6">
+                <textarea  name="projectContent" class="col-md-12"  maxlength="1000" rows="5"></textarea>
  				</div>
             </div>
-			<button name="insert1" class="btn btn-primary btn-block" onclick="insertProject()" >
+			<button name="insert1" type="button" class="btn btn-primary btn-block" onclick="insertProject()" >
          	 프로젝트생성
             </button>
         <div class="text-center">
-          <button class="btn btn-default btn-block" onclick="go_main()">뒤로</button>
+          <button class="btn btn-default btn-block" type="button" onclick="go_main()">뒤로</button>
         </div>									
       </div>
     </div>

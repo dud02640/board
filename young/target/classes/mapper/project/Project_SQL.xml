@@ -259,7 +259,7 @@
 		 order by (case m.userId
 			 		   when #{userId} then 1
 			 		   else 2
-		 		   end),(endDate-now())
+		 		   end),userId,(endDate-now()),workNo
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
@@ -337,7 +337,7 @@
 		 order by (case state
 		 		   when "신규" then 1
 		 		   else 2
-		 		   end ),(endDate-now())
+		 		   end ),(endDate-now()),w.createDate desc
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
@@ -426,7 +426,8 @@
            and state="진행중"
 	</select>
 	<select id="userProjectInfo" parameterType="hashmap" resultType="hashmap">
-		select p.projectName as projectName
+		select p.projectName as projectName,
+			   p.projectNo as projectNo
 		  from project p
 		  left outer join joinm j
 		    on p.projectNo=j.projectNo

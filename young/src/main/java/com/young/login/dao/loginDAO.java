@@ -118,4 +118,14 @@ public class loginDAO extends AbstractDAO{
 		insert("login.insertSaveImg",params);
 	}
 
+	public List<Map<String, Object>> indivisualcreateView(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("login.indivisualcreateView",params);
+	}
+
+	public int indivisualcreateViewCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("login.indivisualcreateViewCnt",params);
+	}
+
 }

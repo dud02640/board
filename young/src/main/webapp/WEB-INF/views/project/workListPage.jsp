@@ -20,6 +20,12 @@ function searchWork1(pIndex){
 		}
 	}); 
 }
+function searchkeyCode1(){
+	if(window.event.keyCode==13){
+		searchWork1();
+	}
+}
+
 function allclick(){
 	$('input:checkbox[name=checkbox]').not(":disabled").prop("checked",$('input:checkbox[name=allcheckbox]').is(":checked"));
 }
@@ -82,8 +88,9 @@ function updateWorkList(workNo){
 					<span class="input-group-btn"> <select class="form-control" name="searchOption1">
 							<option value="1" ${params.searchOption1 eq "1" ? "selected" : ""}>업무번호</option>
 							<option value="2" ${params.searchOption1 eq "2" ? "selected" : ""}>업무명</option>
-					</select> <input name="searchkeyword1" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword1}" onkeypress="if(event.keyCode==13){searchWork1();}" />
-						<button class="btn btn-primary" type="submit" onclick="searchWork1()"><i class="fa fa-search"></i></button>
+					</select> 
+						<input name="searchkeyword1" id="searchkeyword1" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword1}" onkeypress="searchkeyCode1();" />
+						<button class="btn btn-primary" type="button" onclick="searchWork1()"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</div>

@@ -330,6 +330,7 @@ function go_multidel(){
 				</div>
 			</div>	
 		</div>
+		</div>
 	<div class="card mb-3">
 		<div class="card-body bg-faded">
 			<div class="row col-sm-12 col-md-12" ><span class="fontsize13em">체크 리스트</span>
@@ -436,9 +437,11 @@ function go_multidel(){
               </div>
             </div>
             <div class="form-row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <label>프로젝트 사진 등록</label>
+                <div>
                 <input type="file" name="projectImage" accept=".gif, .jpg, .png" />
+                </div>
                 <label>기존 사진 : ${projectdetail.projectImage}</label>
               </div>
             </div>
@@ -449,9 +452,7 @@ function go_multidel(){
                 </div>
             </div>
             <div class="form-row">
-              <div class="col-md-6">
-                <textarea name="projectContent" class="textarea" maxlength="1000">${projectContent}</textarea>
- 				</div>
+                <textarea name="projectContent" class="col-md-6" maxlength="1000" rows="5">${projectContent}</textarea>
             </div>					
       </div>
       <div class="modal-footer">

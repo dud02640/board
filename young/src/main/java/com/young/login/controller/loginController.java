@@ -191,10 +191,18 @@ public class loginController {
 	@RequestMapping(value = "/login/logincheck.do")
 	public String loginCheck(HttpServletRequest req,@RequestParam Map<String,Object> params ,Model model,HttpServletResponse response) throws IOException {
 		String returnUrl="";
-		System.out.println(params);
+		
 		Map<String,Object> logincheck = loginService.selectCheckMember(params);
 		
-		if(logincheck.get("userId").equals(params.get("userId"))&&logincheck.get("userPw").equals(params.get("userPw"))) {
+		if(logincheck==null) {
+			response.setContentType("text/html; charset=utf-8");
+			PrintWriter out=response.getWriter();
+			out.println("<script>alert('회원정보를 정확히 입력하시오');</script>");
+			out.flush();
+			model.addAttribute("id", params.get("userId"));
+		
+			returnUrl= "/login/login";
+		}else {
 			HttpSession session=req.getSession();
 			session.setAttribute("userId",logincheck.get("userId"));
 			session.setAttribute("userName",logincheck.get("userName"));
@@ -202,14 +210,6 @@ public class loginController {
 
 			System.out.println(session.getAttribute("uesrId"));
 			returnUrl= "redirect:/project/main.do";
-		}else {
-			response.setContentType("text/html; charset=utf-8");
-			PrintWriter out=response.getWriter();
-			out.println("<script>alert('회원정보를 정확히 입력하시오');</script>");
-			out.flush();
-			model.addAttribute("id", params.get("userId"));
-		
-			returnUrl= "redirect:/login/login.do";
 		}
 		return returnUrl;
 	}

@@ -145,4 +145,16 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		loginDAO.insertSaveImg(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> indivisualcreateView(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.indivisualcreateView(params);
+	}
+
+	@Override
+	public int indivisualcreateViewCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.indivisualcreateViewCnt(params);
+	}
 }

@@ -184,8 +184,7 @@ function searchMember(pIndex){
 				<!-- 페이징 -->
 				<c:if test="${selectboardlistcnt>0}">
 					<div class="col-sm-12 col-md-7">
-						<div class="dataTables_paginate paging_simple_numbers"
-							id="dataTable_paginate">
+						<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 							<ul class="pagination">
 								<c:if test="${params.selectPage-1!=0}">
 									<li class="paginate_button page-item prvious disable"><button

@@ -149,9 +149,9 @@ public class projectController {
 		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
 		params.put("startpage",startpage);
 	
-		List<Map<String,Object>> indivisualView = loginService.indivisualView(params);
+		List<Map<String,Object>> indivisualView = loginService.indivisualcreateView(params);
 
-		int membercnt= loginService.indivisualViewCnt(params);			//member 총인원
+		int membercnt= loginService.indivisualcreateViewCnt(params);			//member 총인원
 		
 		if(membercnt%paging!=0)							//paging으로 나누었을떄 0 이면 나뉜 페이지 보여줌
 			endpage=membercnt/paging+1;					//맴버 총 수에서 10을 나누고 나머지 페이지
@@ -165,6 +165,7 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		model.addAttribute("membercnt",membercnt);
 		model.addAttribute("indivisualView",indivisualView);
 		model.addAttribute("params",params);
 		
@@ -298,6 +299,7 @@ public class projectController {
 	@RequestMapping(value = "/project/projectDetailView.do")
 	public String projectDetailView(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){		
 		
+		System.out.println(params);
 		HttpSession session = req.getSession();		
 		params.put("userId", session.getAttribute("userId"));
 		params.put("adminYn", session.getAttribute("adminYn"));
@@ -472,7 +474,9 @@ public class projectController {
 
 		Map<String,Object> selectMemberinfo = loginService.selectMemberinfo(params);
 		Map<String,Object> updateWorkListModalView= projectService.updateWorkListModalView(params);
+		Map<String,Object> joinMemberCheck=joinService.joinMemberCheck(params);
 		
+		mav.addObject("joinMemberCheck", joinMemberCheck);
 		mav.addObject("params", params);
 		mav.addObject("selectMemberinfo", selectMemberinfo);
 		mav.addObject("updateWorkListModalView", updateWorkListModalView);
