@@ -186,7 +186,6 @@ function mutiDo(){
 			<c:if test="${params.endpage != params.currentpage}">
 				<li class="paginate_button page-item next"><button name="next" class="page-link" onclick="searchWork2(${params.selectPage +1})">다음</button></li>
 			</c:if>
-		
 		<input type="hidden" name="joinId" value="${joinMemberCheck.userId}"/>
 		<input type="hidden" name="selectPage" value="${params.selectPage}"/>
 		<input type="hidden" name="underPaging" value=""/>
